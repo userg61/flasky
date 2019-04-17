@@ -1,3 +1,11 @@
+import sys
+import os
+from multiprocessing import Process, current_process
+
+from utils import trace1, trace2
+
+trace1(__file__, sys._getframe().f_lineno, __name__, os.getpid(), os.getppid(), current_process().name)
+
 from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_mail import Mail
