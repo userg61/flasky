@@ -7,7 +7,9 @@ trace1(__file__, sys._getframe().f_lineno, __name__, os.getpid(), os.getppid(), 
 
 
 from dotenv import load_dotenv
+from flask import request as rq
 
+dbg_user = "User for debug"
 
 def field_value(index, name_field, records):
     index_requests_message = records['fields'][name_field]
@@ -49,3 +51,12 @@ def load_config(env_file_name):
     load_dotenv(os.path.join(basedir, env_file_name))
     return basedir
 
+
+def is_remote_user():
+    if rq.remote_user is None:
+        #  tg.app.logger.info(f"remote_user - None")
+        u = dbg_user
+    else:
+        #  tg.app.logger.info(f"{rq.remote_user} (ip: {rq.remote_addr})")
+        u = rq.remote_user
+    return u

@@ -4,11 +4,12 @@ from ..models import User
 from ..email import send_email
 from . import main
 from .forms import NameForm
-
+from ..utils import tools
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
     form = NameForm()
+    user_ad = tools.is_remote_user()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.name.data).first()
         if user is None:
@@ -18,11 +19,11 @@ def index():
             session['known'] = False
             if current_app.config['FLASKY_ADMIN']:
                 send_email(current_app.config['FLASKY_ADMIN'], 'New User',
-                           'mail/new_user', user=user)
+                           'mail/new_user', user=user, user_ad=user_ad)
         else:
             session['known'] = True
         session['name'] = form.name.data
         return redirect(url_for('.index'))
     return render_template('index.html',
-                           form=form, name=session.get('name'),
+                           form=form, name=session.get('name'), user_ad=user_ad,
                            known=session.get('known', False))
